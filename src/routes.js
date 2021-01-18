@@ -8,6 +8,10 @@ const Mensagens = new MensagemController();
 const routes = Router();
 
 // chamados
+routes.get("/", (req, res) => {
+  return res.send("hello world!");
+});
+
 routes.post("/chamados/criar", Chamados.criarChamado);
 routes.delete("/chamados/deletar", Chamados.deletarChamado);
 routes.get("/chamados/listar", Chamados.listarChamados);
