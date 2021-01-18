@@ -1,6 +1,6 @@
 module.exports = {
   development: {
-    // url: process.env.DATABASE_URL || "127.0.0.1",
+    url: process.env.DATABASE_URL || "127.0.0.1",
     database: "suportdev",
     username: "postgres",
     password: "jhonito11",
@@ -10,7 +10,7 @@ module.exports = {
     dialect: "postgres",
   },
   test: {
-    url: process.env.TEST_DATABASE_URL,
+    DATABASE_URL: process.env.TEST_DATABASE_URL,
     database: "suportdevtest",
     username: "postgres",
     password: "jhonito11",
@@ -20,7 +20,7 @@ module.exports = {
     dialect: "postgres",
   },
   production: {
-    url: process.env.DATABASE_URL,
+    DATABASE_URL: process.env.DATABASE_URL,
     database: process.env.DATABASE,
     user: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
