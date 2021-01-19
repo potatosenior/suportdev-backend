@@ -7,14 +7,26 @@ var basename = path.basename(module.filename);
 var env = process.env.NODE_ENV || "development";
 var config = require(__dirname + "/../config/config.js")[env];
 var db = {};
+console.log("cfg: ", config);
 
-var sequelize = new Sequelize(
+let sequelize;
+if (config.use_env_variable) {
+  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+} else {
+  sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    config
+  );
+}
+
+/* sequelize = new Sequelize(
   config.database,
   config.username,
   config.password,
   config
-);
-// var sequelize = require("../connection.js");
+); */
 
 fs.readdirSync(__dirname)
   .filter(function (file) {
@@ -23,7 +35,6 @@ fs.readdirSync(__dirname)
     );
   })
   .forEach(function (file) {
-    // var model = sequelize["import"](path.join(__dirname, file));
     var model = require(path.join(__dirname, file))(
       sequelize,
       Sequelize.DataTypes
