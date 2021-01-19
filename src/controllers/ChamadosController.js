@@ -2,6 +2,13 @@ const { sequelize } = require("../database/models/index");
 const Chamado = sequelize.models.Chamado;
 
 module.exports = class ChamadosController {
+  /**
+   * Cria um novo chamado no banco de dados
+   *
+   * @param {*} req
+   * @param {*} res
+   * @return {*} retorna o objeto chamado criado
+   */
   criarChamado = async (req, res) => {
     const { nome, cliente, descricao, status } = req.body;
 
@@ -32,6 +39,13 @@ module.exports = class ChamadosController {
     }
   };
 
+  /**
+   * deleta um chamado e suas mensagens
+   *
+   * @param {*} req
+   * @param {*} res
+   * @return {*} O objeto chamado deletado
+   */
   deletarChamado = async (req, res) => {
     const { chamadoId } = req.query;
 
@@ -57,6 +71,13 @@ module.exports = class ChamadosController {
     }
   };
 
+  /**
+   * Lista todos chamados existentes
+   *
+   * @param {*} req
+   * @param {*} res
+   * @return {*} Uma lista com todos objetos chamados existentes no banco de dados
+   */
   listarChamados = async (req, res) => {
     try {
       const result = await Chamado.findAll();
@@ -67,6 +88,13 @@ module.exports = class ChamadosController {
     }
   };
 
+  /**
+   * Atualiza um chamado
+   *
+   * @param {*} req
+   * @param {*} res
+   * @return {*} O objeto chamado atualizado
+   */
   atualizarChamado = async (req, res) => {
     const { nome, cliente, status, descricao, chamadoId } = req.body;
 

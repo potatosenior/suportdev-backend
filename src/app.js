@@ -1,5 +1,4 @@
 const express = require("express");
-const path = require("path");
 const routes = require("./routes");
 const { sequelize } = require("./database/models/index");
 const cors = require("cors");
@@ -7,25 +6,12 @@ const cors = require("cors");
 const app = express();
 
 app.use(express.json());
-app.use(cors());
-app.use("*", function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-  );
-
-  next();
-});
-
-app.use(routes);
+app.use(cors()); // habilita cross site requests
+app.use(routes); // inicializa as rotas
 
 const port = process.env.PORT || 3000;
 
+// inicializa a conexao com o banco de dados
 sequelize
   .sync()
   .then(() => {

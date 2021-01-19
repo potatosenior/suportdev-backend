@@ -7,7 +7,6 @@ var basename = path.basename(module.filename);
 var env = process.env.NODE_ENV || "development";
 var config = require(__dirname + "/../config/config.js")[env];
 var db = {};
-console.log("cfg: ", config);
 
 let sequelize;
 if (config.use_env_variable) {
@@ -20,13 +19,6 @@ if (config.use_env_variable) {
     config
   );
 }
-
-/* sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  config
-); */
 
 fs.readdirSync(__dirname)
   .filter(function (file) {

@@ -2,6 +2,13 @@ const { sequelize } = require("../database/models/index");
 const Mensagem = sequelize.models.Mensagem;
 
 module.exports = class MensagemController {
+  /**
+   * Cria uma nova mensagem no banco de dados
+   *
+   * @param {*} req
+   * @param {*} res
+   * @return {*} Objeto mensagem criado
+   */
   criarMensagem = async (req, res) => {
     const { conteudo, chamadoId } = req.body;
 
@@ -30,6 +37,13 @@ module.exports = class MensagemController {
     }
   };
 
+  /**
+   * Deleta uma mensagem no banco de dados
+   *
+   * @param {*} req
+   * @param {*} res
+   * @return {*} Mensagem deletada
+   */
   deletarMensagem = async (req, res) => {
     const { id } = req.body;
 
@@ -51,6 +65,13 @@ module.exports = class MensagemController {
     }
   };
 
+  /**
+   * Lista todas mensagens do chamado informado
+   *
+   * @param {*} req
+   * @param {*} res
+   * @return {*} Uma lista com objetos mensagem
+   */
   listarMensagens = async (req, res) => {
     const { chamadoId } = req.query;
 
