@@ -2,21 +2,21 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  const Mensagem = sequelize.define("Mensagem", {
-    conteudo: {
+  const Message = sequelize.define("Message", {
+    content: {
       type: DataTypes.STRING,
     },
-    chamadoId: {
+    callId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
   });
 
-  Mensagem.associations = models => {
-    Mensagem.belongsTo(models.Chamado, {
-      foreignKey: "ChamadoId",
+  Message.associations = models => {
+    Message.belongsTo(models.Call, {
+      foreignKey: "CallId",
       onDelete: "CASCADE",
     });
   };
-  return Mensagem;
+  return Message;
 };

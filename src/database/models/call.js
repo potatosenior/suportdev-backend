@@ -2,16 +2,16 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  const Chamado = sequelize.define("Chamado", {
-    nome: {
+  const Call = sequelize.define("Call", {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    cliente: {
+    client: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    descricao: {
+    description: {
       type: DataTypes.STRING,
     },
     status: {
@@ -19,13 +19,13 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
 
-  Chamado.associate = models => {
-    Chamado.hasMany(models.Mensagem, {
-      foreignKey: "chamadoId",
-      as: "mensagem",
+  Call.associate = models => {
+    Call.hasMany(models.Message, {
+      foreignKey: "callId",
+      as: "message",
       onDelete: "CASCADE",
     });
   };
 
-  return Chamado;
+  return Call;
 };

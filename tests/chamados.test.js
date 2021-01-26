@@ -1,77 +1,74 @@
 const request = require("supertest");
 const app = require("../src/app");
 const { sequelize } = require("../src/database/models/index");
-const Chamado = sequelize.models.Chamado;
+const Call = sequelize.models.Call;
 
-var chamadoId = null;
+var callId = null;
 
-test("Deve criar um chamado", async () => {
+test("Deve create um call", async () => {
   const response = await request(app)
-    .post("/chamados/criar")
+    .post("/calls/create")
     .send({
-      nome: "Test",
-      cliente: "Test Cliente",
-      descricao: "Lorem ipsum",
-      status: "aberto",
+      name: "Test",
+      client: "Test Client",
+      description: "Lorem ipsum",
+      status: "open",
     })
     .expect(201);
 
-  chamadoId = response.body.data.id;
+  callId = response.body.data.id;
 
-  const chamado = await Chamado.findAll({
-    where: { id: chamadoId },
+  const call = await Call.findAll({
+    where: { id: callId },
   });
-  expect(chamado).not.toBeNull();
+  expect(call).not.toBeNull();
 });
 
-test("Deve atualizar um chamado", async () => {
+test("Deve atualizar um call", async () => {
   await request(app)
-    .patch("/chamados/atualizar")
+    .patch("/calls/atualizar")
     .send({
-      nome: "Test Atualizado",
-      cliente: "Test Cliente Atualizado",
-      descricao: "Lorem ipsum dolor",
-      status: "fechado",
-      chamadoId,
+      name: "Test Atualizado",
+      client: "Test Client Atualizado",
+      description: "Lorem ipsum dolor",
+      status: "closed",
+      callId,
     })
     .expect(200);
 });
 
-test("Deve criar uma mensagem", async () => {
+test("Deve create uma message", async () => {
   const response = await request(app)
-    .post("/chamados/mensagens/criar")
+    .post("/calls/messages/create")
     .send({
-      conteudo: "Lorem ipsum dolor",
-      chamadoId,
+      content: "Lorem ipsum dolor",
+      callId,
     })
     .expect(201);
 
   expect(response.body.data).not.toBeNull();
 });
 
-test("Deve listar mensagens", async () => {
+test("Deve index messages", async () => {
   const response = await request(app)
-    .get("/chamados/mensagens/listar?chamadoId=" + chamadoId)
+    .get("/calls/messages/index?callId=" + callId)
     .send({
-      chamadoId,
+      callId,
     })
     .expect(200);
 
   expect(response.body.data).not.toBeNull();
 });
 
-test("Deve listar os chamado", async () => {
-  const response = await request(app)
-    .get("/chamados/listar")
-    .send()
-    .expect(200);
+test("Deve index os call", async () => {
+  const response = await request(app).get("/calls/index").send().expect(200);
 
   expect(response.body.data).not.toBeNull();
 });
 
-test("Deve deletar o chamado", async () => {
+test("Deve deletar o call", async () => {
   await request(app)
-    .delete("/chamados/deletar?chamadoId=" + chamadoId)
+    .delete("/calls/deletar?callId=" + callId)
     .send({})
     .expect(200);
 });
