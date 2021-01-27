@@ -1,5 +1,5 @@
-const { sequelize } = require("../database/models/index");
-const Message = sequelize.models.Message;
+const MessageService = require("../services/Message");
+const Message = new MessageService();
 
 module.exports = class MessageController {
   createMessage = async (req, res) => {
@@ -7,34 +7,33 @@ module.exports = class MessageController {
 
     try {
       if (content && callId) {
-        const new_msg = await Message.build({
-          content,
-          callId,
-        });
-
-        if (new_msg) {
-          await new_msg
-            .save()
-            .then(result => {
-              return res.status(201).send({
-                error: false,
-                message: "Message criada com sucesso!",
-                data: new_msg,
+        return await Message.create(content, callId)
+          .then(result => {
+            return res.status(201).send({
+              error: false,
+              message: "Message criada com sucesso!",
+              data: result,
+            });
+          })
+          .catch(error => {
+            if (error.name == "SequelizeForeignKeyConstraintError")
+              return res.status(400).send({
+                error: true,
+                message: "Chamado não encontrado!",
               });
-            })
-            .catch(error => null);
-        }
+            throw new Error(error);
+          });
       }
       return res.status(400).send({
         error: true,
         message: "Dados incompletos!",
       });
     } catch (error) {
-      return res.status(500);
+      return res.status(500).send({ error: true, messsage: "Erro interno!" });
     }
   };
 
-  deletarMessage = async (req, res) => {
+  deleteMessage = async (req, res) => {
     const { id } = req.body;
 
     try {
@@ -60,19 +59,16 @@ module.exports = class MessageController {
 
     try {
       if (callId) {
-        const result = await Message.findAll({
-          where: {
-            callId,
-          },
-        });
-        if (result) return res.status(200).send(result);
+        await Message.index(callId)
+          .then(result => {
+            return res.status(200).send(result);
+          })
+          .catch(error => {
+            throw new Error(error);
+          });
       }
-
-      return res.status(400).send({
-        error: true,
-        message: "Dados incompletos!",
-      });
     } catch (error) {
+      console.error(error);
       return res.status(500).send({
         error: true,
         message: "Erro interno!",

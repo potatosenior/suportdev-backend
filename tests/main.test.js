@@ -142,15 +142,15 @@ test("Não deve listar mensagens", async () => {
   expect(response.body.data).toBe(undefined);
 });
 
-test("Não deve deletar o chamado", async () => {
+test("Não deve delete o chamado", async () => {
   await request(app)
-    .delete("/calls/deletar?callId=" + 999)
+    .delete("/calls/delete?callId=" + 999)
     .expect(400);
 });
 
-test("Deve deletar o chamado", async () => {
+test("Deve delete o chamado", async () => {
   return await request(app)
-    .delete("/calls/deletar?callId=" + callId)
+    .delete("/calls/delete?callId=" + callId)
     .send()
     .expect(200);
 });

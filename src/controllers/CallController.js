@@ -1,26 +1,27 @@
-const { sequelize } = require("../database/models/index");
-const Call = sequelize.models.Call;
-
+const CallService = require("../services/Call");
+const Call = new CallService();
 module.exports = class CallsController {
   createCall = async (req, res) => {
     const { name, client, description, status } = req.body;
 
     try {
-      if (client && name && description) {
-        const new_call = await Call.build({
-          name,
-          client,
-          description,
-          status,
-        });
-
-        await new_call.save();
-
-        return res.status(201).send({
-          error: false,
-          message: "Call criado com sucesso!",
-          data: new_call,
-        });
+      if (
+        client &&
+        name &&
+        description &&
+        (status === "open" || status === "closed")
+      ) {
+        await Call.create(name, client, description, status)
+          .then(result => {
+            return res.status(201).send({
+              error: false,
+              message: "Chamado criado com sucesso!",
+              data: result,
+            });
+          })
+          .catch(error => {
+            throw new Error(error);
+          });
       } else {
         return res.status(400).send({
           error: true,
@@ -28,44 +29,46 @@ module.exports = class CallsController {
         });
       }
     } catch (error) {
-      return res.status(500).send({ error: true, message: error });
+      console.error(error);
+      return res.status(500).send({ error: true, message: error.message });
     }
   };
 
-  deletarCall = async (req, res) => {
+  deleteCall = async (req, res) => {
     const { callId } = req.query;
 
     try {
       if (callId) {
-        const [result] = await Call.findAll({
-          where: {
-            id: callId,
-          },
-        });
+        await Call.delete(callId)
+          .then(result => {
+            return res.status(200).send({
+              error: false,
+              message: "Sucesso ao deletar!",
+              data: result,
+            });
+          })
+          .catch(error => {
+            if (error.message == 10)
+              return res
+                .status(400)
+                .send({ error: true, message: "Chamado não encontrado!" });
 
-        if (result) {
-          await result.destroy();
-
-          return res.status(200).send({
-            error: false,
-            message: "Sucesso ao deletar!",
-            data: result,
+            throw new Error(error);
           });
-        }
       }
-      return res.status(400).send();
     } catch (error) {
-      return res.status(500).send();
+      console.error(error);
+      return res.status(500).send({ error: true, message: error.message });
     }
   };
 
   indexCalls = async (req, res) => {
     try {
-      const result = await Call.findAll();
+      const result = await Call.index();
 
       return res.status(200).send(result);
     } catch (error) {
-      return res.status(500);
+      return res.status(500).send({ error: true, message: error.message });
     }
   };
 
@@ -73,32 +76,39 @@ module.exports = class CallsController {
     const { name, client, status, description, callId } = req.body;
 
     try {
-      if (name && client && status && description) {
-        const [result] = await Call.findAll({
-          where: {
-            id: callId,
-          },
-        });
-
-        if (result) {
-          result.update({
-            name,
-            client,
-            description,
-            status,
+      if (
+        client &&
+        name &&
+        description &&
+        (status === "open" || status === "closed")
+      ) {
+        await Call.update(callId, {
+          name: name.trim(),
+          client: client.trim(),
+          description: description.trim(),
+          status,
+        })
+          .then(result => {
+            console.log("result:", result);
+            return res.status(200).send({
+              error: false,
+              message: "Sucesso ao editar!",
+              data: result,
+            });
+          })
+          .catch(error => {
+            if (error.message == 10)
+              return res
+                .status(400)
+                .send({ error: true, message: "Chamado não encontrado!" });
+            throw new Error(error);
           });
-
-          return res.status(200).send({
-            error: false,
-            message: "Sucesso ao editar!",
-            data: result,
-          });
-        }
-      }
-
-      return res.status(400);
+      } else
+        return res
+          .status(400)
+          .send({ error: true, message: "Dados inválidos!" });
     } catch (error) {
-      return res.status(500);
+      return res.status(500).send({ error: true, message: "Erro interno!" });
     }
   };
 };

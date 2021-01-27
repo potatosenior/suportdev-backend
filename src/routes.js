@@ -12,12 +12,12 @@ routes.get("/", (req, res) => {
 });
 
 routes.post("/calls/create", Calls.createCall);
-routes.delete("/calls/deletar", Calls.deletarCall);
+routes.delete("/calls/delete", Calls.deleteCall);
 routes.get("/calls/index", Calls.indexCalls);
 routes.patch("/calls/update", Calls.updateCall);
 
 routes.post("/calls/messages/create", Messages.createMessage);
-routes.delete("/calls/messages/deletar", Messages.deletarMessage);
+routes.delete("/calls/messages/delete", Messages.deleteMessage);
 routes.get("/calls/messages/index", Messages.indexMessages);
 
 module.exports = routes;
