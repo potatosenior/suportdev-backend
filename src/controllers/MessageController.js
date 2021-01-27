@@ -12,19 +12,23 @@ module.exports = class MessageController {
           callId,
         });
 
-        await new_msg.save();
-
-        return res.status(201).send({
-          error: false,
-          message: "Message criada com sucesso!",
-          data: new_msg,
-        });
-      } else {
-        return res.status(400).send({
-          error: true,
-          message: "Dados incompletos!",
-        });
+        if (new_msg) {
+          await new_msg
+            .save()
+            .then(result => {
+              return res.status(201).send({
+                error: false,
+                message: "Message criada com sucesso!",
+                data: new_msg,
+              });
+            })
+            .catch(error => null);
+        }
       }
+      return res.status(400).send({
+        error: true,
+        message: "Dados incompletos!",
+      });
     } catch (error) {
       return res.status(500);
     }
@@ -61,14 +65,13 @@ module.exports = class MessageController {
             callId,
           },
         });
-
-        return res.status(200).send(result);
-      } else {
-        return res.status(400).send({
-          error: true,
-          message: "Dados incompletos!",
-        });
+        if (result) return res.status(200).send(result);
       }
+
+      return res.status(400).send({
+        error: true,
+        message: "Dados incompletos!",
+      });
     } catch (error) {
       return res.status(500).send({
         error: true,
