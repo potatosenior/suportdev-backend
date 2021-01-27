@@ -7,8 +7,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    client: {
-      type: DataTypes.STRING,
+    client_id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     description: {
@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Call.associate = models => {
+    Call.belongsTo(models.Client, {
+      foreignKey: "client_id",
+      onDelete: "CASCADE",
+    });
     Call.hasMany(models.Message, {
       foreignKey: "callId",
       as: "message",
