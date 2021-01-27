@@ -14,7 +14,7 @@ routes.get("/", (req, res) => {
 routes.post("/calls/create", Calls.createCall);
 routes.delete("/calls/deletar", Calls.deletarCall);
 routes.get("/calls/index", Calls.indexCalls);
-routes.patch("/calls/atualizar", Calls.atualizarCall);
+routes.patch("/calls/update", Calls.updateCall);
 
 routes.post("/calls/messages/create", Messages.createMessage);
 routes.delete("/calls/messages/deletar", Messages.deletarMessage);

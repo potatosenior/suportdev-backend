@@ -7,19 +7,19 @@ module.exports = class CallsController {
 
     try {
       if (client && name && description) {
-        const novo_call = await Call.build({
+        const new_call = await Call.build({
           name,
           client,
           description,
           status,
         });
 
-        await novo_call.save();
+        await new_call.save();
 
         return res.status(201).send({
           error: false,
           message: "Call criado com sucesso!",
-          data: novo_call,
+          data: new_call,
         });
       } else {
         return res.status(400).send({
@@ -36,24 +36,26 @@ module.exports = class CallsController {
     const { callId } = req.query;
 
     try {
-      const [result] = await Call.findAll({
-        where: {
-          id: callId,
-        },
-      });
-
-      if (result) {
-        await result.destroy();
-        return res.status(200).send({
-          error: false,
-          message: "Sucesso ao deletar!",
-          data: result,
+      if (callId) {
+        const [result] = await Call.findAll({
+          where: {
+            id: callId,
+          },
         });
-      }
 
-      return res.status(400);
+        if (result) {
+          await result.destroy();
+
+          return res.status(200).send({
+            error: false,
+            message: "Sucesso ao deletar!",
+            data: result,
+          });
+        }
+      }
+      return res.status(400).send();
     } catch (error) {
-      return res.status(500);
+      return res.status(500).send();
     }
   };
 
@@ -67,28 +69,31 @@ module.exports = class CallsController {
     }
   };
 
-  atualizarCall = async (req, res) => {
+  updateCall = async (req, res) => {
     const { name, client, status, description, callId } = req.body;
 
     try {
-      const [result] = await Call.findAll({
-        where: {
-          id: callId,
-        },
-      });
-      result.update({
-        name,
-        client,
-        description,
-        status,
-      });
-
-      if (result) {
-        return res.status(200).send({
-          error: false,
-          message: "Sucesso ao editar!",
-          data: result,
+      if (name && client && status && description) {
+        const [result] = await Call.findAll({
+          where: {
+            id: callId,
+          },
         });
+
+        if (result) {
+          result.update({
+            name,
+            client,
+            description,
+            status,
+          });
+
+          return res.status(200).send({
+            error: false,
+            message: "Sucesso ao editar!",
+            data: result,
+          });
+        }
       }
 
       return res.status(400);
