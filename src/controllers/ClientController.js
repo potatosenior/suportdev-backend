@@ -1,28 +1,22 @@
-const CallService = require("../services/Call");
 const ClientService = require("../services/Client");
-const Call = new CallService();
 const Client = new ClientService();
-module.exports = class CallsController {
-  createCall = async (req, res) => {
-    const { name, cpf, description, status } = req.body;
+
+module.exports = class ClientsController {
+  createClient = async (req, res) => {
+    const { name, cpf, date_of_birth } = req.body;
 
     try {
-      if (
-        name &&
-        cpf &&
-        description &&
-        (status === "open" || status === "closed")
-      ) {
-        await Call.create(name, cpf, description, status)
+      if (name && cpf && date_of_birth) {
+        await Client.create(name, cpf, date_of_birth)
           .then(result => {
             return res.status(201).send({
               error: false,
-              message: "Chamado criado com sucesso!",
+              message: "Cliente criado com sucesso!",
               data: result,
             });
           })
           .catch(error => {
-            throw error;
+            throw new Error(error);
           });
       } else {
         return res.status(400).send({
@@ -32,18 +26,16 @@ module.exports = class CallsController {
       }
     } catch (error) {
       console.error(error);
-      return res
-        .status(error.code || 500)
-        .send({ error: true, message: error.message });
+      return res.status(500).send({ error: true, message: error.message });
     }
   };
 
-  deleteCall = async (req, res) => {
-    const { callId } = req.query;
+  deleteClient = async (req, res) => {
+    const { client_id } = req.query;
 
     try {
-      if (callId) {
-        await Call.delete(callId)
+      if (client_id) {
+        await Client.delete(client_id)
           .then(result => {
             return res.status(200).send({
               error: false,
@@ -55,7 +47,7 @@ module.exports = class CallsController {
             if (error.message == 10)
               return res
                 .status(400)
-                .send({ error: true, message: "Chamado não encontrado!" });
+                .send({ error: true, message: "Cliente não encontrado!" });
 
             throw new Error(error);
           });
@@ -66,9 +58,11 @@ module.exports = class CallsController {
     }
   };
 
-  indexCalls = async (req, res) => {
+  indexClients = async (req, res) => {
     try {
-      const result = await Call.index();
+      const result = await Client.index().catch(error => {
+        throw error;
+      });
 
       return res.status(200).send(result);
     } catch (error) {
@@ -80,34 +74,25 @@ module.exports = class CallsController {
     try {
       const id = req.params.id;
 
-      if (id)
-        return await Call.getById(id)
-          .then(result => res.status(200).send(result))
-          .catch(error => {
-            throw error;
-          });
-      else
-        return res.status(400).send({ error: true, message: "Id inválido." });
+      return await Client.getById(id)
+        .then(result => res.status(200).send(result))
+        .catch(error => {
+          throw error;
+        });
     } catch (error) {
       return res.status(500).send({ error: true, message: error.message });
     }
   };
 
-  updateCall = async (req, res) => {
-    const { name, cpf, status, description, callId } = req.body;
+  updateClient = async (req, res) => {
+    const { name, cpf, date_of_birth, client_id } = req.body;
 
     try {
-      if (
-        cpf &&
-        name &&
-        description &&
-        (status === "open" || status === "closed")
-      ) {
-        await Call.update(callId, {
+      if (name && cpf && date_of_birth) {
+        await Client.update(client_id, {
           name: name.trim(),
           cpf: cpf.trim(),
-          description: description.trim(),
-          status,
+          date_of_birth: date_of_birth,
         })
           .then(result => {
             console.log("result:", result);
@@ -121,7 +106,7 @@ module.exports = class CallsController {
             if (error.message == 10)
               return res
                 .status(400)
-                .send({ error: true, message: "Chamado não encontrado!" });
+                .send({ error: true, message: "Cliente não encontrado!" });
             throw new Error(error);
           });
       } else

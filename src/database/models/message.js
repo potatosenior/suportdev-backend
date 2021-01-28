@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Message.associations = models => {
     Message.belongsTo(models.Call, {
-      foreignKey: "CallId",
+      foreignKey: "callId",
       onDelete: "CASCADE",
     });
   };
