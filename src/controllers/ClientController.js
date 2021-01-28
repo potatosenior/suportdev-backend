@@ -60,9 +60,25 @@ module.exports = class ClientsController {
 
   indexClients = async (req, res) => {
     try {
-      const result = await Client.index();
+      const result = await Client.index().catch(error => {
+        throw error;
+      });
 
       return res.status(200).send(result);
+    } catch (error) {
+      return res.status(500).send({ error: true, message: error.message });
+    }
+  };
+
+  indexById = async (req, res) => {
+    try {
+      const id = req.params.id;
+
+      return await Client.getById(id)
+        .then(result => res.status(200).send(result))
+        .catch(error => {
+          throw error;
+        });
     } catch (error) {
       return res.status(500).send({ error: true, message: error.message });
     }

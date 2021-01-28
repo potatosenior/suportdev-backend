@@ -10,6 +10,7 @@ module.exports = class Client {
     })
       .then(result => result.dataValues)
       .catch(error => {
+        console.log("check");
         throw new Error(error);
       });
   }
@@ -31,6 +32,18 @@ module.exports = class Client {
           throw new Error(error);
         });
     else throw new Error(10);
+  }
+
+  async getById(id) {
+    return await ClientModel.findOne({
+      where: {
+        id,
+      },
+    })
+      .then(result => result.dataValues)
+      .catch(error => {
+        throw new Error(error);
+      });
   }
 
   async index() {

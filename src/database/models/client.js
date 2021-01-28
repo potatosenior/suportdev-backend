@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Client.associate = models => {
     Client.hasMany(models.Call, {
-      foreignKey: "callId",
+      foreignKey: "client_id",
       as: "call",
       onDelete: "CASCADE",
     });

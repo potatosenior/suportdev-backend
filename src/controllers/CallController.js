@@ -1,17 +1,19 @@
 const CallService = require("../services/Call");
+const ClientService = require("../services/Client");
 const Call = new CallService();
+const Client = new ClientService();
 module.exports = class CallsController {
   createCall = async (req, res) => {
-    const { name, client, description, status } = req.body;
+    const { name, cpf, description, status } = req.body;
 
     try {
       if (
-        client &&
         name &&
+        cpf &&
         description &&
         (status === "open" || status === "closed")
       ) {
-        await Call.create(name, client, description, status)
+        await Call.create(name, cpf, description, status)
           .then(result => {
             return res.status(201).send({
               error: false,
@@ -20,7 +22,7 @@ module.exports = class CallsController {
             });
           })
           .catch(error => {
-            throw new Error(error);
+            throw error;
           });
       } else {
         return res.status(400).send({
@@ -30,7 +32,9 @@ module.exports = class CallsController {
       }
     } catch (error) {
       console.error(error);
-      return res.status(500).send({ error: true, message: error.message });
+      return res
+        .status(error.code || 500)
+        .send({ error: true, message: error.message });
     }
   };
 
@@ -72,19 +76,36 @@ module.exports = class CallsController {
     }
   };
 
+  indexById = async (req, res) => {
+    try {
+      const id = req.params.id;
+
+      if (id)
+        return await Call.getById(id)
+          .then(result => res.status(200).send(result))
+          .catch(error => {
+            throw error;
+          });
+      else
+        return res.status(400).send({ error: true, message: "Id inválido." });
+    } catch (error) {
+      return res.status(500).send({ error: true, message: error.message });
+    }
+  };
+
   updateCall = async (req, res) => {
-    const { name, client, status, description, callId } = req.body;
+    const { name, cpf, status, description, callId } = req.body;
 
     try {
       if (
-        client &&
+        cpf &&
         name &&
         description &&
         (status === "open" || status === "closed")
       ) {
         await Call.update(callId, {
           name: name.trim(),
-          client: client.trim(),
+          cpf: cpf.trim(),
           description: description.trim(),
           status,
         })
