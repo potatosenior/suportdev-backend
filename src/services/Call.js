@@ -57,7 +57,7 @@ module.exports = class Call {
         if (result) return result.dataValues;
         else {
           let error = new Error("Chamado não encontrado");
-          error.code = 400;
+          error.code = 404;
 
           throw error;
         }
@@ -88,6 +88,11 @@ module.exports = class Call {
         .catch(error => {
           throw new Error(error);
         });
-    } else throw new Error(10);
+    } else {
+      let error = new Error("Chamado não encontrado");
+      error.code = 400;
+
+      throw error;
+    }
   }
 };
