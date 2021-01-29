@@ -31,7 +31,7 @@ module.exports = class CallsController {
         });
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return res
         .status(error.code || 500)
         .send({ error: true, message: error.message });
@@ -89,12 +89,14 @@ module.exports = class CallsController {
       else
         return res.status(400).send({ error: true, message: "Id inválido." });
     } catch (error) {
-      return res.status(500).send({ error: true, message: error.message });
+      return res
+        .status(error.code || 500)
+        .send({ error: true, message: error.message });
     }
   };
 
   updateCall = async (req, res) => {
-    const { name, cpf, status, description, callId } = req.body;
+    const { name, cpf, status, description, id } = req.body;
 
     try {
       if (
@@ -103,14 +105,13 @@ module.exports = class CallsController {
         description &&
         (status === "open" || status === "closed")
       ) {
-        await Call.update(callId, {
+        await Call.update(id, {
           name: name.trim(),
           cpf: cpf.trim(),
           description: description.trim(),
           status,
         })
           .then(result => {
-            console.log("result:", result);
             return res.status(200).send({
               error: false,
               message: "Sucesso ao editar!",
@@ -118,18 +119,16 @@ module.exports = class CallsController {
             });
           })
           .catch(error => {
-            if (error.message == 10)
-              return res
-                .status(400)
-                .send({ error: true, message: "Chamado não encontrado!" });
-            throw new Error(error);
+            throw error;
           });
       } else
         return res
           .status(400)
           .send({ error: true, message: "Dados inválidos!" });
     } catch (error) {
-      return res.status(500).send({ error: true, message: "Erro interno!" });
+      return res
+        .status(error.status || 500)
+        .send({ error: true, message: error.message });
     }
   };
 };

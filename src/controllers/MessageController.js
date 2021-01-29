@@ -3,11 +3,11 @@ const Message = new MessageService();
 
 module.exports = class MessageController {
   createMessage = async (req, res) => {
-    const { content, callId } = req.body;
+    const { content, id } = req.body;
 
     try {
-      if (content && callId) {
-        return await Message.create(content, callId)
+      if (content && id) {
+        return await Message.create(content, id)
           .then(result => {
             return res.status(201).send({
               error: false,

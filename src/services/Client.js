@@ -2,15 +2,11 @@ const { sequelize } = require("../database/models/index");
 const ClientModel = sequelize.models.Client;
 
 module.exports = class Client {
-  async create(name, cpf, date_of_birth) {
-    return await ClientModel.create({
-      name,
-      cpf,
-      date_of_birth,
-    })
+  async create(data) {
+    console.log(data.date_of_birth);
+    return await ClientModel.create(data)
       .then(result => result.dataValues)
       .catch(error => {
-        console.log("check");
         throw new Error(error);
       });
   }

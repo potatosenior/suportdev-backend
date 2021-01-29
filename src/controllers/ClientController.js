@@ -1,32 +1,39 @@
 const ClientService = require("../services/Client");
 const Client = new ClientService();
+const validator = require("../utils/validators/client");
 
 module.exports = class ClientsController {
   createClient = async (req, res) => {
-    const { name, cpf, date_of_birth } = req.body;
-
     try {
-      if (name && cpf && date_of_birth) {
-        await Client.create(name, cpf, date_of_birth)
-          .then(result => {
-            return res.status(201).send({
-              error: false,
-              message: "Cliente criado com sucesso!",
-              data: result,
+      return await validator
+        .validate(req.body, { abortEarly: false })
+        .then(async data => {
+          await Client.create(data)
+            .then(result => {
+              return res.status(201).send({
+                error: false,
+                message: "Cliente criado com sucesso!",
+                data: result,
+              });
+            })
+            .catch(error => {
+              throw error;
             });
-          })
-          .catch(error => {
-            throw new Error(error);
-          });
-      } else {
-        return res.status(400).send({
-          error: true,
-          message: "Dados incompletos!",
+        })
+        .catch(error => {
+          let newError = error;
+          error.code = 400;
+
+          if (error.errors)
+            error.message = [...new Set(error.errors)].join("\n");
+
+          throw error;
         });
-      }
     } catch (error) {
-      console.error(error);
-      return res.status(500).send({ error: true, message: error.message });
+      // console.error(error);
+      return res
+        .status(error.code || 500)
+        .send({ error: true, message: error.message });
     }
   };
 
