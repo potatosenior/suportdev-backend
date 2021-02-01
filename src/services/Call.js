@@ -28,13 +28,13 @@ module.exports = class Call {
     }
   }
 
-  async delete(callId) {
-    const [result] = await CallModel.findAll({
+  async delete(id) {
+    const result = await CallModel.findOne({
       where: {
-        id: callId,
+        id,
       },
     }).catch(error => {
-      throw new Error(error);
+      throw error;
     });
 
     if (result)
@@ -42,7 +42,7 @@ module.exports = class Call {
         .destroy()
         .then(() => result.dataValues)
         .catch(error => {
-          throw new Error(error);
+          throw error;
         });
     else throw new Error(10);
   }

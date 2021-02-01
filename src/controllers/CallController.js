@@ -39,11 +39,11 @@ module.exports = class CallsController {
   };
 
   deleteCall = async (req, res) => {
-    const { callId } = req.query;
+    const { id } = req.query;
 
     try {
-      if (callId) {
-        await Call.delete(callId)
+      if (id) {
+        await Call.delete(id)
           .then(result => {
             return res.status(200).send({
               error: false,
@@ -57,7 +57,7 @@ module.exports = class CallsController {
                 .status(400)
                 .send({ error: true, message: "Chamado não encontrado!" });
 
-            throw new Error(error);
+            throw error;
           });
       }
     } catch (error) {

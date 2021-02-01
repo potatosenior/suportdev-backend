@@ -2,15 +2,102 @@ const request = require("supertest");
 const app = require("../src/app");
 const { sequelize } = require("../src/database/models/index");
 const Call = sequelize.models.Call;
+const Client = sequelize.models.Client;
+const Message = sequelize.models.Message;
 
 var callId = null;
+var clientCpf = "78762428128";
+var clientId = null;
+
+test("Deve criar um cliente", async () => {
+  const response = await request(app)
+    .post("/clients/create")
+    .send({
+      name: "Test client",
+      cpf: clientCpf,
+      email: "email@test.com",
+      date_of_birth: "2020-01-01",
+      phone_number: "1122223333",
+      adress: "endereço cliente",
+    })
+    .expect(201);
+
+  clientId = response.body.data.id;
+  const client = await Client.findOne({
+    where: { id: clientId },
+  });
+
+  expect(client).not.toBeNull();
+});
+
+test("Não deve criar um cliente", async () => {
+  const testsCase = [
+    {
+      name: "",
+      cpf: "78762428128",
+      email: "email@test.com",
+      date_of_birth: "2020-01-01",
+      phone_number: "1122223333",
+      adress: "endereço cliente",
+    },
+    {
+      name: "Test",
+      cpf: "11111111111",
+      email: "email@",
+      date_of_birth: "2020-01-01",
+      phone_number: "1122223333",
+      adress: "endereço cliente",
+    },
+    {
+      name: "Test",
+      cpf: "78762428128",
+      email: "email",
+      date_of_birth: "2020-01-01",
+      phone_number: "1122223333",
+      adress: "endereço cliente",
+    },
+    {
+      name: "Test",
+      cpf: "78762428128",
+      email: "email@test.com",
+      date_of_birth: "",
+      phone_number: "1122223333",
+      adress: "endereço cliente",
+    },
+    {
+      name: "Test",
+      cpf: "78762428128",
+      email: "email@test.com",
+      date_of_birth: "2020-01-01",
+      phone_number: "112223",
+      adress: "endereço cliente",
+    },
+    {
+      name: "Test",
+      cpf: "78762428128",
+      email: "email@test.com",
+      date_of_birth: "2020-01-01",
+      phone_number: "1122223333",
+      adress: "",
+    },
+  ];
+
+  testsCase.forEach(async test => {
+    const response = await request(app)
+      .post("/clients/create")
+      .send(test)
+      .expect(400);
+
+    expect(response.body.data).toBeUndefined();
+  });
+});
 
 test("Deve criar um chamado", async () => {
   const response = await request(app)
     .post("/calls/create")
     .send({
-      name: "Test",
-      client: "Test Client",
+      name: "Chamado Test",
+      cpf: clientCpf,
       description: "Lorem ipsum",
       status: "open",
     })
@@ -18,7 +105,7 @@ test("Deve criar um chamado", async () => {
 
   callId = response.body.data.id;
 
-  const call = await Call.findAll({
+  const call = await Call.findOne({
     where: { id: callId },
   });
   expect(call).not.toBeNull();
@@ -28,21 +115,27 @@ test("Não deve criar um chamado", async () => {
   const testsCase = [
     {
       name: "",
-      client: "Test Client",
+      cpf: clientCpf,
       description: "Lorem ipsum",
       status: "open",
     },
     {
       name: "Test Name",
-      client: "",
+      cpf: "113123111",
       description: "Lorem ipsum",
       status: "open",
     },
     {
       name: "Test Name",
-      client: "Test Client",
+      cpf: clientCpf,
       description: "",
       status: "open",
+    },
+    {
+      name: "Test Name",
+      cpf: clientCpf,
+      description: "",
+      status: "",
     },
   ];
 
@@ -61,10 +154,10 @@ test("Deve atualizar um chamado", async () => {
     .patch("/calls/update")
     .send({
       name: "Test Atualizado",
-      client: "Test Client Atualizado",
+      cpf: clientCpf,
       description: "Lorem ipsum dolor",
       status: "closed",
-      callId,
+      id: callId,
     })
     .expect(200);
 });
@@ -73,21 +166,27 @@ test("Nao deve atualizar um chamado", async () => {
   const testsCase = [
     {
       name: "",
-      client: "Test Client",
+      cpf: clientCpf,
       description: "Lorem ipsum",
       status: "open",
     },
     {
       name: "Test Name",
-      client: "",
+      cpf: "",
       description: "Lorem ipsum",
       status: "open",
     },
     {
       name: "Test Name",
-      client: "Test Client",
+      cpf: clientCpf,
       description: "",
       status: "open",
+    },
+    {
+      name: "Test Name",
+      cpf: clientCpf,
+      description: "",
+      status: "",
     },
   ];
 
@@ -144,13 +243,21 @@ test("Não deve listar mensagens", async () => {
 
 test("Não deve delete o chamado", async () => {
   await request(app)
-    .delete("/calls/delete?callId=" + 999)
+    .delete("/calls/delete?id=" + 999)
     .expect(400);
 });
 
 test("Deve delete o chamado", async () => {
   return await request(app)
-    .delete("/calls/delete?callId=" + callId)
+    .delete("/calls/delete?id=" + callId)
     .send()
     .expect(200);
 });
+
+const resetDb = async () => {
+  await Call.destroy({ where: {} });
+  await Client.destroy({ where: {} });
+  await Message.destroy({ truncate: true });
+};
+
+resetDb();

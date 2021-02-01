@@ -1,4 +1,3 @@
-// import * as yup from "yup";
 const yup = require("yup");
 
 yup.setLocale({
@@ -34,7 +33,7 @@ function validateCPF(cpf) {
 }
 
 const schema = yup.object().shape({
-  name: yup.string().trim().required().label("Nome"),
+  name: yup.string().required().label("Nome"),
   cpf: yup
     .string()
     .required()
@@ -44,7 +43,6 @@ const schema = yup.object().shape({
     }),
   email: yup
     .string()
-    .trim()
     .lowercase()
     .required()
     .email("Email deve ser válido!")
@@ -56,7 +54,7 @@ const schema = yup.object().shape({
     .test("is-only-numbers", "Numero inválido", value => /^[0-9]*$/.test(value))
     .max(11, "Número inválido")
     .min(10, "Número inválido"),
-  adress: yup.string().trim().required().label("Endereço"),
+  adress: yup.string().required().label("Endereço"),
   date_of_birth: yup.string().required().label("Data de nascimento"),
 });
 
