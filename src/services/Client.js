@@ -3,7 +3,7 @@ const ClientModel = sequelize.models.Client;
 
 module.exports = class Client {
   async create(data) {
-    console.log(data.date_of_birth);
+    // verificar se ja nao existe um no banco de dados
     return await ClientModel.create(data)
       .then(result => result.dataValues)
       .catch(error => {

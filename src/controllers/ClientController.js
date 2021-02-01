@@ -5,6 +5,7 @@ const validator = require("../utils/validators/client");
 module.exports = class ClientsController {
   createClient = async (req, res) => {
     try {
+      // console.log(req.body);
       return await validator
         .validate(req.body, { abortEarly: false })
         .then(async data => {
@@ -93,7 +94,7 @@ module.exports = class ClientsController {
 
   updateClient = async (req, res) => {
     const { name, cpf, date_of_birth, client_id } = req.body;
-
+    // atualizar isso aqui
     try {
       if (name && cpf && date_of_birth) {
         await Client.update(client_id, {
