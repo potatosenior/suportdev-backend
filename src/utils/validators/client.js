@@ -54,7 +54,7 @@ const schema = yup.object().shape({
     .test("is-only-numbers", "Numero inválido", value => /^[0-9]*$/.test(value))
     .max(11, "Número inválido")
     .min(10, "Número inválido"),
-  adress: yup.string().required().label("Endereço"),
+  address: yup.string().required().label("Endereço"),
   date_of_birth: yup.string().required().label("Data de nascimento"),
 });
 

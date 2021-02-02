@@ -10,14 +10,17 @@ module.exports = {
     dialect: "postgres",
   },
   test: {
-    DATABASE_URL: process.env.TEST_DATABASE_URL,
+    dialect: "sqlite",
+    storage: ":memory:",
+    logging: false,
+    /*     DATABASE_URL: process.env.TEST_DATABASE_URL,
     database: "suportdevtest",
     username: "postgres",
     password: "jhonito11",
     host: "127.0.0.1",
     port: "7070",
     logging: false,
-    dialect: "postgres",
+    dialect: "postgres", */
   },
   production: {
     use_env_variable: "DATABASE_URL",

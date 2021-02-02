@@ -5,11 +5,10 @@ const validator = require("../utils/validators/client");
 module.exports = class ClientsController {
   createClient = async (req, res) => {
     try {
-      // console.log(req.body);
       return await validator
         .validate(req.body, { abortEarly: false })
         .then(async data => {
-          await Client.create(data)
+          return await Client.create(data)
             .then(result => {
               return res.status(201).send({
                 error: false,
@@ -22,7 +21,6 @@ module.exports = class ClientsController {
             });
         })
         .catch(error => {
-          let newError = error;
           error.code = 400;
 
           if (error.errors)
@@ -52,17 +50,14 @@ module.exports = class ClientsController {
             });
           })
           .catch(error => {
-            if (error.message == 10)
-              return res
-                .status(400)
-                .send({ error: true, message: "Cliente não encontrado!" });
-
-            throw new Error(error);
+            throw error;
           });
       }
     } catch (error) {
-      console.error(error);
-      return res.status(500).send({ error: true, message: error.message });
+      // console.error(error);
+      return res
+        .status(error.code || 500)
+        .send({ error: true, message: error.message });
     }
   };
 
@@ -74,7 +69,9 @@ module.exports = class ClientsController {
 
       return res.status(200).send(result);
     } catch (error) {
-      return res.status(500).send({ error: true, message: error.message });
+      return res
+        .status(error.code || 500)
+        .send({ error: true, message: error.message });
     }
   };
 
@@ -88,41 +85,38 @@ module.exports = class ClientsController {
           throw error;
         });
     } catch (error) {
-      return res.status(500).send({ error: true, message: error.message });
+      return res
+        .status(error.code || 500)
+        .send({ error: true, message: error.message });
     }
   };
 
   updateClient = async (req, res) => {
-    const { name, cpf, date_of_birth, client_id } = req.body;
-    // atualizar isso aqui
     try {
-      if (name && cpf && date_of_birth) {
-        await Client.update(client_id, {
-          name: name.trim(),
-          cpf: cpf.trim(),
-          date_of_birth: date_of_birth,
-        })
-          .then(result => {
-            console.log("result:", result);
-            return res.status(200).send({
-              error: false,
-              message: "Sucesso ao editar!",
-              data: result,
+      return await validator
+        .validate(req.body, { abortEarly: false })
+        .then(async data => {
+          return await Client.update(req.body.client_id, data)
+            .then(result =>
+              res.status(200).send({
+                error: false,
+                message: "Sucesso ao editar!",
+                data: result,
+              })
+            )
+            .catch(error => {
+              throw error;
             });
-          })
-          .catch(error => {
-            if (error.message == 10)
-              return res
-                .status(400)
-                .send({ error: true, message: "Cliente não encontrado!" });
-            throw new Error(error);
-          });
-      } else
-        return res
-          .status(400)
-          .send({ error: true, message: "Dados inválidos!" });
+        })
+        .catch(error => {
+          error.code = 400;
+          throw error;
+        });
     } catch (error) {
-      return res.status(500).send({ error: true, message: "Erro interno!" });
+      // console.error(error);
+      return res
+        .status(error.code || 500)
+        .send({ error: true, message: error.message });
     }
   };
 };

@@ -6,7 +6,7 @@ test("Validar o cliente", async () => {
     cpf: "78762428128",
     email: "email@test.com",
     phone_number: "1111111111",
-    adress: "endereço",
+    address: "endereço",
     date_of_birth: "2000-01-01",
   });
 

@@ -18,11 +18,12 @@ test("Deve criar um cliente", async () => {
       email: "email@test.com",
       date_of_birth: "2020-01-01",
       phone_number: "1122223333",
-      adress: "endereço cliente",
+      address: "endereço cliente",
     })
     .expect(201);
 
   clientId = response.body.data.id;
+
   const client = await Client.findOne({
     where: { id: clientId },
   });
@@ -34,11 +35,11 @@ test("Não deve criar um cliente", async () => {
   const testsCase = [
     {
       name: "",
-      cpf: "78762428128",
+      cpf: clientCpf,
       email: "email@test.com",
       date_of_birth: "2020-01-01",
       phone_number: "1122223333",
-      adress: "endereço cliente",
+      address: "endereço cliente",
     },
     {
       name: "Test",
@@ -46,39 +47,55 @@ test("Não deve criar um cliente", async () => {
       email: "email@",
       date_of_birth: "2020-01-01",
       phone_number: "1122223333",
-      adress: "endereço cliente",
+      address: "endereço cliente",
     },
     {
       name: "Test",
-      cpf: "78762428128",
+      cpf: clientCpf,
       email: "email",
       date_of_birth: "2020-01-01",
       phone_number: "1122223333",
-      adress: "endereço cliente",
+      address: "endereço cliente",
     },
     {
       name: "Test",
-      cpf: "78762428128",
+      cpf: clientCpf,
       email: "email@test.com",
       date_of_birth: "",
       phone_number: "1122223333",
-      adress: "endereço cliente",
+      address: "endereço cliente",
     },
     {
       name: "Test",
-      cpf: "78762428128",
+      cpf: clientCpf,
       email: "email@test.com",
       date_of_birth: "2020-01-01",
       phone_number: "112223",
-      adress: "endereço cliente",
+      address: "endereço cliente",
     },
     {
       name: "Test",
-      cpf: "78762428128",
+      cpf: clientCpf,
       email: "email@test.com",
       date_of_birth: "2020-01-01",
       phone_number: "1122223333",
-      adress: "",
+      address: "",
+    },
+    {
+      name: "Test",
+      cpf: clientCpf,
+      email: "email@test.com",
+      date_of_birth: "2020-01-01",
+      phone_number: "1122223333",
+      address: "endereço cliente",
+    },
+    {
+      name: "Test",
+      cpf: "42343727813",
+      email: "email@test.com",
+      date_of_birth: "2020-01-01",
+      phone_number: "1122223333",
+      address: "endereço cliente",
     },
   ];
 
@@ -90,6 +107,36 @@ test("Não deve criar um cliente", async () => {
 
     expect(response.body.data).toBeUndefined();
   });
+});
+
+test("Deve atualizar um cliente", async () => {
+  await request(app)
+    .patch("/clients/update")
+    .send({
+      name: "Test client atualizado",
+      cpf: clientCpf,
+      email: "email@test.com",
+      date_of_birth: "2020-01-01",
+      phone_number: "1122223333",
+      address: "endereço cliente",
+      client_id: clientId,
+    })
+    .expect(200);
+});
+
+test("Não deve atualizar um cliente", async () => {
+  await request(app)
+    .patch("/clients/update")
+    .send({
+      name: "Test client atualizado",
+      cpf: "1111111111",
+      email: "email@test.com",
+      date_of_birth: "2020-01-01",
+      phone_number: "1122223333",
+      address: "endereço cliente",
+      client_id: clientId,
+    })
+    .expect(400);
 });
 
 test("Deve criar um chamado", async () => {
@@ -253,11 +300,3 @@ test("Deve delete o chamado", async () => {
     .send()
     .expect(200);
 });
-
-const resetDb = async () => {
-  await Call.destroy({ where: {} });
-  await Client.destroy({ where: {} });
-  await Message.destroy({ truncate: true });
-};
-
-resetDb();
