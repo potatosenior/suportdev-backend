@@ -1,11 +1,12 @@
 const { sequelize } = require("../database/models/index");
+
 const ClientModel = sequelize.models.Client;
 
 module.exports = class Client {
   async create(data) {
     // verificar se ja nao existe um no banco de dados
     try {
-      let cpfAlreadyExists = await ClientModel.findOne({
+      const cpfAlreadyExists = await ClientModel.findOne({
         where: {
           cpf: data.cpf,
         },
@@ -18,7 +19,7 @@ module.exports = class Client {
         throw error;
       }
 
-      let emailAlreadyExists = await ClientModel.findOne({
+      const emailAlreadyExists = await ClientModel.findOne({
         where: {
           email: data.email,
         },
@@ -70,7 +71,7 @@ module.exports = class Client {
     });
 
     if (client) {
-      return result.dataValues;
+      return client.dataValues;
     } else {
       let error = new Error("Cliente não encontrado!");
       error.code = 400;
@@ -87,16 +88,16 @@ module.exports = class Client {
       });
   }
 
-  async update(client_id, newClientData) {
+  async update(id, newData) {
     const result = await ClientModel.findOne({
       where: {
-        id: client_id,
+        id: id,
       },
     });
 
     if (result) {
       return await result
-        .update(newClientData)
+        .update(newData)
         .then(result => result.dataValues)
         .catch(error => {
           throw error;

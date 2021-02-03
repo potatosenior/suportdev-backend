@@ -22,7 +22,7 @@ module.exports = class ClientsController {
         })
         .catch(error => {
           error.code = 400;
-
+          // console.error(error);
           if (error.errors)
             error.message = [...new Set(error.errors)].join("\n");
 
@@ -80,11 +80,12 @@ module.exports = class ClientsController {
       const id = req.params.id;
 
       return await Client.getById(id)
-        .then(result => res.status(200).send(result))
+        .then(result => res.status(200).send({ error: false, data: result }))
         .catch(error => {
           throw error;
         });
     } catch (error) {
+      // console.error(error);
       return res
         .status(error.code || 500)
         .send({ error: true, message: error.message });
@@ -96,11 +97,11 @@ module.exports = class ClientsController {
       return await validator
         .validate(req.body, { abortEarly: false })
         .then(async data => {
-          return await Client.update(req.body.client_id, data)
+          return await Client.update(req.body.id, data)
             .then(result =>
               res.status(200).send({
                 error: false,
-                message: "Sucesso ao editar!",
+                message: "Dados atualizados com sucesso!",
                 data: result,
               })
             )
@@ -110,6 +111,7 @@ module.exports = class ClientsController {
         })
         .catch(error => {
           error.code = 400;
+
           throw error;
         });
     } catch (error) {
