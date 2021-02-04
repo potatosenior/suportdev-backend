@@ -5,62 +5,57 @@ const ClientModel = sequelize.models.Client;
 module.exports = class Client {
   async create(data) {
     // verificar se ja nao existe um no banco de dados
-    try {
-      const cpfAlreadyExists = await ClientModel.findOne({
-        where: {
-          cpf: data.cpf,
-        },
-      });
+    const cpfAlreadyExists = await ClientModel.findOne({
+      where: {
+        cpf: data.cpf,
+      },
+    });
 
-      if (cpfAlreadyExists) {
-        let error = new Error("Cpf já cadastrado!");
-        error.code = 400;
+    if (cpfAlreadyExists) {
+      const error = new Error("Cpf já cadastrado!");
+      error.code = 400;
 
-        throw error;
-      }
-
-      const emailAlreadyExists = await ClientModel.findOne({
-        where: {
-          email: data.email,
-        },
-      });
-
-      if (emailAlreadyExists) {
-        let error = new Error("Email já cadastrado!");
-        error.code = 400;
-
-        throw error;
-      }
-
-      return await ClientModel.create(data)
-        .then(result => result.dataValues)
-        .catch(error => {
-          throw error;
-        });
-    } catch (error) {
       throw error;
     }
+
+    const emailAlreadyExists = await ClientModel.findOne({
+      where: {
+        email: data.email,
+      },
+    });
+
+    if (emailAlreadyExists) {
+      const error = new Error("Email já cadastrado!");
+      error.code = 400;
+
+      throw error;
+    }
+
+    return ClientModel.create(data)
+      .then(result => result.dataValues)
+      .catch(error => {
+        throw error;
+      });
   }
 
-  async delete(client_id) {
+  async delete(id) {
     const result = await ClientModel.findOne({
       where: {
-        id: client_id,
+        id,
       },
     }).catch(error => {
       throw error;
     });
 
     if (result)
-      return await result
+      return result
         .destroy()
         .then(() => result.dataValues)
         .catch(error => {
           throw error;
         });
-    else {
-      return true;
-    }
+
+    return true;
   }
 
   async getById(id) {
@@ -72,16 +67,15 @@ module.exports = class Client {
 
     if (client) {
       return client.dataValues;
-    } else {
-      let error = new Error("Cliente não encontrado!");
-      error.code = 400;
-
-      throw error;
     }
+    const error = new Error("Cliente não encontrado!");
+    error.code = 400;
+
+    throw error;
   }
 
   async index() {
-    return await ClientModel.findAll()
+    return ClientModel.findAll()
       .then(result => result)
       .catch(error => {
         throw error;
@@ -89,24 +83,23 @@ module.exports = class Client {
   }
 
   async update(id, newData) {
-    const result = await ClientModel.findOne({
+    const client = await ClientModel.findOne({
       where: {
-        id: id,
+        id,
       },
     });
 
-    if (result) {
-      return await result
+    if (client) {
+      return client
         .update(newData)
         .then(result => result.dataValues)
         .catch(error => {
           throw error;
         });
-    } else {
-      let error = new Error("Cliente não encontrado!");
-      error.code = 400;
-
-      throw error;
     }
+    const error = new Error("Cliente não encontrado!");
+    error.code = 400;
+
+    throw error;
   }
 };

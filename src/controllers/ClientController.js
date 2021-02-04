@@ -1,7 +1,6 @@
 const ClientService = require("../services/Client");
 const Client = new ClientService();
 const validator = require("../utils/validators/client");
-
 module.exports = class ClientsController {
   createClient = async (req, res) => {
     try {
@@ -69,6 +68,7 @@ module.exports = class ClientsController {
 
       return res.status(200).send(result);
     } catch (error) {
+      console.error(error);
       return res
         .status(error.code || 500)
         .send({ error: true, message: error.message });

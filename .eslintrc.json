@@ -1,4 +1,4 @@
-{
+/* {
   "env": {
     "commonjs": true,
     "es2021": true,
@@ -14,7 +14,9 @@
       "error",
       {
         "endOfLine": "auto"
-      }
-    ]
+      },
+    ],
+    "arrow-parens": ["warn", "as-needed"]
   }
 }
+ */
