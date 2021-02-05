@@ -6,9 +6,9 @@ test("Validar o cliente", async () => {
     name: "algum nome",
     cpf: "78762428128",
     email: "email@test.com",
-    phone_number: "1111111111",
+    phone: "1111111111",
     address: "endereço",
-    date_of_birth: "2000-01-01",
+    birthday: "2000-01-01",
   });
 
   expect(result).toBe(true);
