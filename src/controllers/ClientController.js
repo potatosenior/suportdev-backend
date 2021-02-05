@@ -36,11 +36,11 @@ module.exports = class ClientsController {
   };
 
   deleteClient = async (req, res) => {
-    const { client_id } = req.query;
+    const { clientId } = req.query;
 
     try {
-      if (client_id) {
-        await Client.delete(client_id)
+      if (clientId) {
+        await Client.delete(clientId)
           .then(result => {
             return res.status(200).send({
               error: false,

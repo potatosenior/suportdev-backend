@@ -1,13 +1,13 @@
+/* eslint-disable no-undef */
 const request = require("supertest");
 const app = require("../src/app");
 const { sequelize } = require("../src/database/models/index");
 const Call = sequelize.models.Call;
 const Client = sequelize.models.Client;
-const Message = sequelize.models.Message;
 
-var callId = null;
-var clientCpf = "78762428128";
-var clientId = null;
+let callId = null;
+let clientId = null;
+const clientCpf = "78762428128";
 
 test("Deve criar um cliente", async () => {
   const response = await request(app)
