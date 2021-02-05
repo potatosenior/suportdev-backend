@@ -14,8 +14,10 @@ module.exports = (() => {
       password: process.env.DATABASE_PASSWORD || "",
       host: process.env.DATABASE_HOST || "",
       port: process.env.DATABASE_PORT || "",
+      forceDrop: process.env.DATABASE_FORCE_DROP || false,
       logging: false,
     },
+    NODE_ENV: process.env.NODE_ENV,
   };
 
   if (process.env.NODE_ENV === "test") {

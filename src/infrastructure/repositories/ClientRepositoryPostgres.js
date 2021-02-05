@@ -12,22 +12,34 @@ module.exports = class extends ClientRepository {
   }
 
   async persist(clientEntity) {
-    const { firstName, lastName, email, password } = clientEntity;
-    const seqClient = await this.model.create({
-      firstName,
-      lastName,
-      email,
-      password,
-    });
-    await seqClient.save();
+    const { name, cpf, email, phone, birthday, address } = clientEntity;
 
-    return new Client(
-      seqClient.id,
-      seqClient.firstName,
-      seqClient.lastName,
-      seqClient.email,
-      seqClient.password
-    );
+    try {
+      const seqClient = await this.model.create({
+        name,
+        cpf,
+        email,
+        birthday,
+        phone,
+        address,
+      });
+
+      await seqClient.save();
+
+      return new Client(
+        seqClient.id,
+        name,
+        cpf,
+        email,
+        birthday,
+        phone,
+        address
+      );
+    } catch (error) {
+      error.code = 400;
+
+      throw error;
+    }
   }
 
   async merge(clientEntity) {
@@ -35,15 +47,17 @@ module.exports = class extends ClientRepository {
 
     if (!seqClient) return false;
 
-    const { firstName, lastName, email, password } = clientEntity;
-    await seqClient.update({ firstName, lastName, email, password });
+    const { name, cpf, email, birthday, phone, address } = clientEntity;
+    await seqClient.update({ name, cpf, email, birthday, phone, address });
 
     return new Client(
       seqClient.id,
-      seqClient.firstName,
-      seqClient.lastName,
+      seqClient.name,
+      seqClient.cpf,
       seqClient.email,
-      seqClient.password
+      seqClient.birthday,
+      seqClient.phone,
+      seqClient.address
     );
   }
 
@@ -57,37 +71,73 @@ module.exports = class extends ClientRepository {
 
   async get(clientId) {
     const seqClient = await this.model.findByPk(clientId);
-    return new Client(
-      seqClient.id,
-      seqClient.firstName,
-      seqClient.lastName,
-      seqClient.email,
-      seqClient.password
-    );
+
+    if (seqClient)
+      return new Client(
+        seqClient.id,
+        seqClient.name,
+        seqClient.cpf,
+        seqClient.email,
+        seqClient.birthday,
+        seqClient.phone,
+        seqClient.address
+      );
+    else {
+      const error = new Error("Usuário não encontrado!");
+      error.code = 400;
+
+      throw error;
+    }
   }
 
   async getByEmail(clientEmail) {
     const seqClient = await this.model.findOne({
       where: { email: clientEmail },
     });
+
+    if (!seqClient) return false;
+
     return new Client(
       seqClient.id,
-      seqClient.firstName,
-      seqClient.lastName,
+      seqClient.name,
+      seqClient.cpf,
       seqClient.email,
-      seqClient.password
+      seqClient.phone,
+      seqClient.birthday,
+      seqClient.address
+    );
+  }
+
+  async getByCpf(clientCpf) {
+    const seqClient = await this.model.findOne({
+      where: { cpf: clientCpf },
+    });
+
+    if (!seqClient) return false;
+
+    return new Client(
+      seqClient.id,
+      seqClient.name,
+      seqClient.cpf,
+      seqClient.email,
+      seqClient.phone,
+      seqClient.birthday,
+      seqClient.address
     );
   }
 
   async find() {
     const seqClients = await this.model.findAll();
+
     return seqClients.map(seqClient => {
       return new Client(
         seqClient.id,
-        seqClient.firstName,
-        seqClient.lastName,
+        seqClient.name,
+        seqClient.cpf,
         seqClient.email,
-        seqClient.password
+        seqClient.birthday,
+        seqClient.phone,
+        seqClient.address
       );
     });
   }

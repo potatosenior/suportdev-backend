@@ -1,10 +1,12 @@
 "use strict";
 
 function buildBeans() {
-  const UserRepositoryPostgres = require("../repositories/ClientRepositoryPostgres");
+  const ClientRepositoryPostgres = require("../repositories/ClientRepositoryPostgres");
+  const ClientSerializer = require("../../interfaces/serializers/ClientSerializer");
 
   const beans = {
-    userRepository: new UserRepositoryPostgres(),
+    userRepository: new ClientRepositoryPostgres(),
+    clientSerializer: new ClientSerializer(),
   };
 
   return beans;

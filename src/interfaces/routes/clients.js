@@ -3,10 +3,10 @@ const controller = require("../controllers/ClientController");
 
 const routes = Router();
 
-routes.post("/create", controller.createClient);
-// routes.delete("/delete", controller.deleteClient);
-// routes.get("/index", controller.indexClients);
-// routes.get("/index/:id", controller.indexById);
-// routes.patch("/update", controller.updateClient);
+routes.post("/create", controller.create);
+routes.delete("/delete", controller.delete);
+routes.get("/index", controller.index);
+routes.get("/get/:id", controller.findById);
+routes.patch("/update", controller.update);
 
 module.exports = routes;
