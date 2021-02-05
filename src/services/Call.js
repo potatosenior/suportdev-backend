@@ -22,8 +22,9 @@ module.exports = class Call {
           throw new Error(error);
         });
     } else {
-      let error = new Error("Nenhum cliente cadastrado com esse CPF.");
+      const error = new Error("Nenhum cliente cadastrado com esse CPF.");
       error.code = 400;
+
       throw error;
     }
   }
@@ -44,7 +45,7 @@ module.exports = class Call {
         .catch(error => {
           throw error;
         });
-    else throw new Error(10);
+    else return true;
   }
 
   async getById(id) {
@@ -56,7 +57,7 @@ module.exports = class Call {
       .then(result => {
         if (result) return result.dataValues;
         else {
-          let error = new Error("Chamado não encontrado");
+          const error = new Error("Chamado não encontrado");
           error.code = 404;
 
           throw error;
@@ -74,7 +75,7 @@ module.exports = class Call {
     });
   }
 
-  async update(callId, new_call) {
+  async update(callId, newCall) {
     const [result] = await CallModel.findAll({
       where: {
         id: callId,
@@ -83,13 +84,13 @@ module.exports = class Call {
 
     if (result) {
       return await result
-        .update(new_call)
+        .update(newCall)
         .then(result => result.dataValues)
         .catch(error => {
           throw new Error(error);
         });
     } else {
-      let error = new Error("Chamado não encontrado");
+      const error = new Error("Chamado não encontrado");
       error.code = 400;
 
       throw error;

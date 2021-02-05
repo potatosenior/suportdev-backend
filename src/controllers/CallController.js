@@ -1,7 +1,5 @@
 const CallService = require("../services/Call");
-const ClientService = require("../services/Client");
 const Call = new CallService();
-const Client = new ClientService();
 module.exports = class CallsController {
   createCall = async (req, res) => {
     const { name, cpf, description, status } = req.body;
@@ -52,16 +50,11 @@ module.exports = class CallsController {
             });
           })
           .catch(error => {
-            if (error.message == 10)
-              return res
-                .status(400)
-                .send({ error: true, message: "Chamado não encontrado!" });
-
             throw error;
           });
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       return res.status(500).send({ error: true, message: error.message });
     }
   };

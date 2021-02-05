@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const clientValidator = require("../src/utils/validators/client.js");
 
 test("Validar o cliente", async () => {

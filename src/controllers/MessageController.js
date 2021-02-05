@@ -16,12 +16,7 @@ module.exports = class MessageController {
             });
           })
           .catch(error => {
-            if (error.name == "SequelizeForeignKeyConstraintError")
-              return res.status(400).send({
-                error: true,
-                message: "Chamado não encontrado!",
-              });
-            throw new Error(error);
+            throw error;
           });
       }
       return res.status(400).send({
@@ -29,7 +24,9 @@ module.exports = class MessageController {
         message: "Dados incompletos!",
       });
     } catch (error) {
-      return res.status(500).send({ error: true, messsage: "Erro interno!" });
+      return res
+        .status(error.code || 500)
+        .send({ error: true, messsage: error.message });
     }
   };
 

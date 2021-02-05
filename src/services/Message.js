@@ -9,6 +9,9 @@ module.exports = class Call {
     })
       .then(result => result.dataValues)
       .catch(error => {
+        error.code = 400;
+        error.message = "Chamado inválido";
+
         throw error;
       });
   }
