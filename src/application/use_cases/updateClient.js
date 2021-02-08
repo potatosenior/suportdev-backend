@@ -11,7 +11,7 @@ module.exports = async (
   birthday,
   phone,
   address,
-  { userRepository }
+  { clientRepository }
 ) => {
   if (
     !clientValidator.isValidSync({
@@ -32,5 +32,5 @@ module.exports = async (
 
   const user = new Client(clientId, name, cpf, email, birthday, phone, address);
 
-  return userRepository.merge(user);
+  return clientRepository.merge(user);
 };

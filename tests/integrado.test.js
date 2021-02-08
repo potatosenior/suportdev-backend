@@ -120,7 +120,7 @@ test("Deve atualizar um cliente", async () => {
       birthday: "2020-01-01",
       phone: "1122223333",
       address: "endereço cliente",
-      client_id: clientId,
+      clientId: clientId,
     })
     .expect(200);
 });
@@ -135,7 +135,7 @@ test("Não deve atualizar um cliente", async () => {
       birthday: "2020-01-01",
       phone: "1122223333",
       address: "endereço cliente",
-      client_id: clientId,
+      clientId: clientId,
     })
     .expect(400);
 });

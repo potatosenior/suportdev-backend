@@ -1,13 +1,12 @@
-const Router = require("express").Router;
-const CallController = require("../controllers/CallController.js");
+const { Router } = require("express");
+const controller = require("../controllers/CallController.js");
 
 const routes = Router();
-const controller = new CallController();
 
-routes.post("/create", controller.createCall);
-routes.delete("/delete", controller.deleteCall);
-routes.get("/index", controller.indexCalls);
-routes.get("/get/:id", controller.indexById);
-routes.patch("/update", controller.updateCall);
+routes.post("/create", controller.create);
+routes.delete("/delete", controller.delete);
+routes.get("/index", controller.index);
+routes.get("/get/:id", controller.findById);
+routes.patch("/update", controller.update);
 
 module.exports = routes;

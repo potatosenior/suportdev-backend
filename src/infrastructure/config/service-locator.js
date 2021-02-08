@@ -2,11 +2,15 @@
 
 function buildBeans() {
   const ClientRepositoryPostgres = require("../repositories/ClientRepositoryPostgres");
-  const ClientSerializer = require("../../interfaces/serializers/ClientSerializer");
+  const CallRepositoryPostgres = require("../repositories/CallRepositoryPostgres");
+  const MessageRepositoryPostgres = require("../repositories/MessageRepositoryPostgres");
+  // const ClientSerializer = require("../../interfaces/serializers/ClientSerializer");
 
   const beans = {
-    userRepository: new ClientRepositoryPostgres(),
-    clientSerializer: new ClientSerializer(),
+    clientRepository: new ClientRepositoryPostgres(),
+    callRepository: new CallRepositoryPostgres(),
+    messageRepository: new MessageRepositoryPostgres(),
+    // clientSerializer: new ClientSerializer(),
   };
 
   return beans;

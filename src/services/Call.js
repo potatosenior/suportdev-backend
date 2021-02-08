@@ -13,7 +13,7 @@ module.exports = class Call {
     if (client) {
       return await CallModel.create({
         name,
-        client_id: client.id,
+        clientId: client.id,
         description,
         status,
       })

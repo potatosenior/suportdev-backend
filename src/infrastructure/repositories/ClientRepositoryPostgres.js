@@ -2,11 +2,9 @@
 
 const { sequelize } = require("../orm/sequelize/sequelize");
 const Client = require("../../domain/Client");
-const ClientRepository = require("../../domain/ClientRepository");
 
-module.exports = class extends ClientRepository {
+module.exports = class {
   constructor() {
-    super();
     this.db = sequelize;
     this.model = this.db.model("Client");
   }

@@ -1,5 +1,5 @@
 "use strict";
 
-module.exports = async ({ userRepository }) => {
-  return userRepository.find();
+module.exports = async ({ clientRepository }) => {
+  return clientRepository.find();
 };

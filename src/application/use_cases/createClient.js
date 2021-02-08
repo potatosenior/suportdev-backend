@@ -10,16 +10,16 @@ module.exports = async (
   birthday,
   phone,
   address,
-  { userRepository }
+  { clientRepository }
 ) => {
   const error = new Error("");
-  if (await userRepository.getByCpf(cpf)) {
+  if (await clientRepository.getByCpf(cpf)) {
     error.code = 400;
     error.path = "cpf";
     error.message = "Cpf já cadastrado!";
     throw error;
   }
-  if (await userRepository.getByEmail(email)) {
+  if (await clientRepository.getByEmail(email)) {
     error.code = 400;
     error.path = "email";
     error.message = "Email já cadastrado!";
@@ -42,5 +42,5 @@ module.exports = async (
 
   const user = new Client(null, name, cpf, email, birthday, phone, address);
 
-  return userRepository.persist(user);
+  return clientRepository.persist(user);
 };

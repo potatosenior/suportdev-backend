@@ -1,5 +1,5 @@
 "use strict";
 
-module.exports = async (clientId, { userRepository }) => {
-  return userRepository.remove(clientId);
+module.exports = async (clientId, { clientRepository }) => {
+  return clientRepository.remove(clientId);
 };
