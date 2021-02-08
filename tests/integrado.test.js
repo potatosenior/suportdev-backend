@@ -1,9 +1,10 @@
 /* eslint-disable no-undef */
 const request = require("supertest");
-const app = require("../src/app");
-const { sequelize } = require("../src/database/models/index");
-const Call = sequelize.models.Call;
-const Client = sequelize.models.Client;
+const app = require("../src/infrastructure/webserver/server");
+const { sequelize } = require("../src/infrastructure/orm/sequelize/sequelize");
+const { Call, Client } = sequelize.models;
+/* const Call = sequelize.models.Call;
+const Client = sequelize.models.Client; */
 
 let callId = null;
 let clientId = null;
@@ -16,8 +17,8 @@ test("Deve criar um cliente", async () => {
       name: "Test client",
       cpf: clientCpf,
       email: "email@test.com",
-      date_of_birth: "2020-01-01",
-      phone_number: "1122223333",
+      birthday: "2020-01-01",
+      phone: "1122223333",
       address: "endereço cliente",
     })
     .expect(201);
@@ -37,64 +38,64 @@ test("Não deve criar um cliente", async () => {
       name: "",
       cpf: clientCpf,
       email: "email@test.com",
-      date_of_birth: "2020-01-01",
-      phone_number: "1122223333",
+      birthday: "2020-01-01",
+      phone: "1122223333",
       address: "endereço cliente",
     },
     {
       name: "Test",
       cpf: "11111111111",
       email: "email@",
-      date_of_birth: "2020-01-01",
-      phone_number: "1122223333",
+      birthday: "2020-01-01",
+      phone: "1122223333",
       address: "endereço cliente",
     },
     {
       name: "Test",
       cpf: clientCpf,
       email: "email",
-      date_of_birth: "2020-01-01",
-      phone_number: "1122223333",
+      birthday: "2020-01-01",
+      phone: "1122223333",
       address: "endereço cliente",
     },
     {
       name: "Test",
       cpf: clientCpf,
       email: "email@test.com",
-      date_of_birth: "",
-      phone_number: "1122223333",
+      birthday: "",
+      phone: "1122223333",
       address: "endereço cliente",
     },
     {
       name: "Test",
       cpf: clientCpf,
       email: "email@test.com",
-      date_of_birth: "2020-01-01",
-      phone_number: "112223",
+      birthday: "2020-01-01",
+      phone: "112223",
       address: "endereço cliente",
     },
     {
       name: "Test",
       cpf: clientCpf,
       email: "email@test.com",
-      date_of_birth: "2020-01-01",
-      phone_number: "1122223333",
+      birthday: "2020-01-01",
+      phone: "1122223333",
       address: "",
     },
     {
       name: "Test",
       cpf: clientCpf,
       email: "email@test.com",
-      date_of_birth: "2020-01-01",
-      phone_number: "1122223333",
+      birthday: "2020-01-01",
+      phone: "1122223333",
       address: "endereço cliente",
     },
     {
       name: "Test",
       cpf: "42343727813",
       email: "email@test.com",
-      date_of_birth: "2020-01-01",
-      phone_number: "1122223333",
+      birthday: "2020-01-01",
+      phone: "1122223333",
       address: "endereço cliente",
     },
   ];
@@ -116,10 +117,10 @@ test("Deve atualizar um cliente", async () => {
       name: "Test client atualizado",
       cpf: clientCpf,
       email: "email@test.com",
-      date_of_birth: "2020-01-01",
-      phone_number: "1122223333",
+      birthday: "2020-01-01",
+      phone: "1122223333",
       address: "endereço cliente",
-      client_id: clientId,
+      clientId: clientId,
     })
     .expect(200);
 });
@@ -131,10 +132,10 @@ test("Não deve atualizar um cliente", async () => {
       name: "Test client atualizado",
       cpf: "1111111111",
       email: "email@test.com",
-      date_of_birth: "2020-01-01",
-      phone_number: "1122223333",
+      birthday: "2020-01-01",
+      phone: "1122223333",
       address: "endereço cliente",
-      client_id: clientId,
+      clientId: clientId,
     })
     .expect(400);
 });
