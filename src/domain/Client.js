@@ -1,8 +1,18 @@
 "use strict";
 
 module.exports = class {
-  constructor(id = null, name, cpf, email, birthday, phone, address) {
+  constructor({
+    id = null,
+    password,
+    name,
+    cpf,
+    email,
+    birthday,
+    phone,
+    address,
+  }) {
     this.id = id;
+    this.password = password;
     this.name = name;
     this.cpf = cpf;
     this.email = email;

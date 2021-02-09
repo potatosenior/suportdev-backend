@@ -18,6 +18,8 @@ module.exports = (() => {
       logging: false,
     },
     NODE_ENV: process.env.NODE_ENV,
+    JWT_SECRET: process.env.JWT_SECRET,
+    SALT_ROUNDS: process.env.SALT_ROUNDS,
   };
 
   if (process.env.NODE_ENV === "test") {

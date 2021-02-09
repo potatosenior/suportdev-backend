@@ -10,9 +10,17 @@ module.exports = class {
   }
 
   async persist(clientEntity) {
-    const { name, cpf, email, phone, birthday, address } = clientEntity;
-
     try {
+      const {
+        name,
+        cpf,
+        email,
+        birthday,
+        phone,
+        address,
+        password,
+      } = clientEntity;
+
       const seqClient = await this.model.create({
         name,
         cpf,
@@ -20,19 +28,12 @@ module.exports = class {
         birthday,
         phone,
         address,
+        password,
       });
 
       await seqClient.save();
 
-      return new Client(
-        seqClient.id,
-        name,
-        cpf,
-        email,
-        birthday,
-        phone,
-        address
-      );
+      return new Client(seqClient);
     } catch (error) {
       error.code = 400;
 
@@ -48,15 +49,7 @@ module.exports = class {
     const { name, cpf, email, birthday, phone, address } = clientEntity;
     await seqClient.update({ name, cpf, email, birthday, phone, address });
 
-    return new Client(
-      seqClient.id,
-      seqClient.name,
-      seqClient.cpf,
-      seqClient.email,
-      seqClient.birthday,
-      seqClient.phone,
-      seqClient.address
-    );
+    return new Client(seqClient);
   }
 
   async remove(clientId) {
@@ -70,16 +63,7 @@ module.exports = class {
   async get(clientId) {
     const seqClient = await this.model.findByPk(clientId);
 
-    if (seqClient)
-      return new Client(
-        seqClient.id,
-        seqClient.name,
-        seqClient.cpf,
-        seqClient.email,
-        seqClient.birthday,
-        seqClient.phone,
-        seqClient.address
-      );
+    if (seqClient) return new Client(seqClient);
     else {
       const error = new Error("Usuário não encontrado!");
       error.code = 400;
@@ -95,15 +79,7 @@ module.exports = class {
 
     if (!seqClient) return false;
 
-    return new Client(
-      seqClient.id,
-      seqClient.name,
-      seqClient.cpf,
-      seqClient.email,
-      seqClient.phone,
-      seqClient.birthday,
-      seqClient.address
-    );
+    return new Client(seqClient);
   }
 
   async getByCpf(clientCpf) {
@@ -113,30 +89,14 @@ module.exports = class {
 
     if (!seqClient) return false;
 
-    return new Client(
-      seqClient.id,
-      seqClient.name,
-      seqClient.cpf,
-      seqClient.email,
-      seqClient.phone,
-      seqClient.birthday,
-      seqClient.address
-    );
+    return new Client(seqClient);
   }
 
   async find() {
     const seqClients = await this.model.findAll();
 
     return seqClients.map(seqClient => {
-      return new Client(
-        seqClient.id,
-        seqClient.name,
-        seqClient.cpf,
-        seqClient.email,
-        seqClient.birthday,
-        seqClient.phone,
-        seqClient.address
-      );
+      return new Client(seqClient);
     });
   }
 };

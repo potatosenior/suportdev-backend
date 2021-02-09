@@ -4,15 +4,26 @@ const Client = require("../../domain/Client");
 const clientValidator = require("../../utils/validators/client");
 
 module.exports = async (
-  name,
-  cpf,
-  email,
-  birthday,
-  phone,
-  address,
-  { clientRepository }
+  { name, cpf, email, birthday, phone, address, password },
+  { clientRepository, hashManager }
 ) => {
   const error = new Error("");
+
+  if (
+    !clientValidator.isValidSync({
+      name,
+      password,
+      cpf,
+      email,
+      birthday,
+      phone,
+      address,
+    })
+  ) {
+    error.code = 400;
+    error.message = "Dados inválidos!";
+    throw error;
+  }
   if (await clientRepository.getByCpf(cpf)) {
     error.code = 400;
     error.path = "cpf";
@@ -25,22 +36,17 @@ module.exports = async (
     error.message = "Email já cadastrado!";
     throw error;
   }
-  if (
-    !clientValidator.isValidSync({
-      name,
-      cpf,
-      email,
-      birthday,
-      phone,
-      address,
-    })
-  ) {
-    error.code = 400;
-    error.message = "Dados inválidos!";
-    throw error;
-  }
 
-  const user = new Client(null, name, cpf, email, birthday, phone, address);
+  const user = new Client({
+    id: null,
+    password: hashManager.hash(password),
+    name,
+    cpf,
+    email,
+    birthday,
+    phone,
+    address,
+  });
 
   return clientRepository.persist(user);
 };

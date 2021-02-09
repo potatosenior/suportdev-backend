@@ -9,16 +9,11 @@ const serviceLocator = require("../../infrastructure/config/service-locator");
 
 module.exports = {
   async create(req, res) {
-    const { name, cpf, email, phone, birthday, address } = req.body;
-
+    const { name, cpf, password, email, phone, birthday, address } = req.body;
+    // console.log(req.body);
     try {
       const user = await createClient(
-        name,
-        cpf,
-        email,
-        birthday,
-        phone,
-        address,
+        { name, cpf, password, email, birthday, phone, address },
         serviceLocator
       ).catch(error => {
         throw error;
@@ -27,7 +22,7 @@ module.exports = {
       return res.status(201).send({
         error: false,
         message: "Usuário criado com sucesso!",
-        data: user,
+        data: user.id,
       });
     } catch (error) {
       // console.error(error);
